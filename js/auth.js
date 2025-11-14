@@ -1,68 +1,78 @@
-// simple client-side auth for learning only
-async function hashPassword(pass) {
-  const enc = new TextEncoder();
-  const data = enc.encode(pass);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const bytes = new Uint8Array(hashBuffer);
-  return Array.from(bytes)
+// Hash password so we don't store plain password
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hash))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 }
 
 function getUsers() {
-  const raw = localStorage.getItem("users");
-  return raw ? JSON.parse(raw) : {};
+  return JSON.parse(localStorage.getItem("users") || "{}");
 }
+
 function saveUsers(users) {
   localStorage.setItem("users", JSON.stringify(users));
 }
 
+// -------------------- REGISTER --------------------
+
 document.getElementById("btn-register").addEventListener("click", async () => {
-  const u = document.getElementById("reg-username").value.trim();
-  const p = document.getElementById("reg-password").value;
+  const username = document.getElementById("reg-username").value.trim();
+  const password = document.getElementById("reg-password").value;
+
   const msg = document.getElementById("reg-msg");
-  if (!u || !p) {
-    msg.innerText = "Enter username and password";
+
+  if (!username || !password) {
+    msg.textContent = "Please enter both username and password.";
     return;
   }
 
   const users = getUsers();
-  if (users[u]) {
-    msg.innerText = "Username taken";
+  if (users[username]) {
+    msg.textContent = "Username already exists.";
     return;
   }
 
-  const h = await hashPassword(p);
-  users[u] = { passwordHash: h, created: Date.now() };
+  const hashed = await hashPassword(password);
+  users[username] = { passwordHash: hashed };
   saveUsers(users);
-  msg.innerText = "Registered. Now login.";
+
+  msg.textContent = "Registered successfully! Now login.";
 });
 
+// -------------------- LOGIN --------------------
+
 document.getElementById("btn-login").addEventListener("click", async () => {
-  const u = document.getElementById("login-username").value.trim();
-  const p = document.getElementById("login-password").value;
+  const username = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value;
+
   const msg = document.getElementById("login-msg");
-  if (!u || !p) {
-    msg.innerText = "Enter username and password";
+
+  if (!username || !password) {
+    msg.textContent = "Please enter both username and password.";
     return;
   }
 
   const users = getUsers();
-  if (!users[u]) {
-    msg.innerText = "No such user";
+  if (!users[username]) {
+    msg.textContent = "User not found.";
     return;
   }
 
-  const h = await hashPassword(p);
-  if (users[u].passwordHash !== h) {
-    msg.innerText = "Wrong password";
+  const hashed = await hashPassword(password);
+
+  if (hashed !== users[username].passwordHash) {
+    msg.textContent = "Incorrect password.";
     return;
   }
 
-  // login success -> set auth token (simple)
-  localStorage.setItem(
-    "authUser",
-    JSON.stringify({ username: u, t: Date.now() })
-  );
-  msg.innerText = "Login success. Go to protected page.";
+  // Login success
+  localStorage.setItem("authUser", JSON.stringify({ username }));
+  msg.textContent = "Login successful! Redirecting...";
+
+  setTimeout(() => {
+    window.location.href = "protected.html";
+  }, 800);
 });

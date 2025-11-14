@@ -3,30 +3,35 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Protected Content</title>
+    <title>Protected Area</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <div class="container">
-      <h1>Protected Content</h1>
-      <div id="content"></div>
+      <h1>Protected Page</h1>
+
+      <p id="welcome"></p>
+
       <button id="logout">Logout</button>
     </div>
 
     <script>
-      // simple check — auth.js sets localStorage.authUser
-      const user = localStorage.getItem("authUser");
-      if (!user) {
-        // not logged in -> go to login page
+      const authUser = localStorage.getItem("authUser");
+
+      if (!authUser) {
+        // If not logged in, send back to login page
         window.location.href = "index.html";
       } else {
-        document.getElementById("content").innerText =
-          "Welcome, " + JSON.parse(user).username + "! This is secret content.";
-        document.getElementById("logout").addEventListener("click", () => {
-          localStorage.removeItem("authUser");
-          window.location.href = "index.html";
-        });
+        const user = JSON.parse(authUser);
+        document.getElementById("welcome").innerText =
+          "Welcome, " + user.username + "! You are now logged in.";
       }
+
+      // Logout
+      document.getElementById("logout").onclick = () => {
+        localStorage.removeItem("authUser");
+        window.location.href = "index.html";
+      };
     </script>
   </body>
 </html>

@@ -3,32 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Portfolio — Login Demo</title>
+    <title>Login System Demo</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <div class="container">
-      <h1>Portfolio (Auth Demo)</h1>
+      <h1>Login System Demo</h1>
 
-      <div id="forms">
-        <section id="register">
-          <h2>Register</h2>
-          <input id="reg-username" placeholder="username" />
-          <input id="reg-password" type="password" placeholder="password" />
-          <button id="btn-register">Register</button>
-          <p id="reg-msg"></p>
-        </section>
+      <section class="box">
+        <h2>Register</h2>
+        <input id="reg-username" placeholder="Username" />
+        <input id="reg-password" type="password" placeholder="Password" />
+        <button id="btn-register">Register</button>
+        <p class="msg" id="reg-msg"></p>
+      </section>
 
-        <section id="login">
-          <h2>Login</h2>
-          <input id="login-username" placeholder="username" />
-          <input id="login-password" type="password" placeholder="password" />
-          <button id="btn-login">Login</button>
-          <p id="login-msg"></p>
-        </section>
-      </div>
-
-      <p>After login, open <a href="protected.html">protected page</a>.</p>
+      <section class="box">
+        <h2>Login</h2>
+        <input id="login-username" placeholder="Username" />
+        <input id="login-password" type="password" placeholder="Password" />
+        <button id="btn-login">Login</button>
+        <p class="msg" id="login-msg"></p>
+      </section>
     </div>
 
     <script src="js/auth.js"></script>
